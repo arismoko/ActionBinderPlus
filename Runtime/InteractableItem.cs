@@ -4,126 +4,129 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Serializable]
-public class InteractableItem : MonoBehaviour
+namespace ActionBinderPlus
 {
-    public GameObject activatable;
-    public bool deactivateOnInteract = false;
-    public bool destroyOnInteract = false;
-    public Component targetComponent;
-
     [Serializable]
-    public class InputActionBinding
+    public class InteractableItem : MonoBehaviour
     {
-        public string bindingId;
-        public string actionName;
-        public string methodName;
-        public bool callOnStarted = true;
-        public bool callOtherFunctionWhenCanceled = false;
-        public string methodNameOnCancel;
-        public bool autoRemoveOnCancel = true;
-        public bool callFunctionImmediately;
+        public GameObject activatable;
+        public bool deactivateOnInteract = false;
+        public bool destroyOnInteract = false;
+        public Component targetComponent;
+
+        [Serializable]
+        public class InputActionBinding
+        {
+            public string bindingId;
+            public string actionName;
+            public string methodName;
+            public bool callOnStarted = true;
+            public bool callOtherFunctionWhenCanceled = false;
+            public string methodNameOnCancel;
+            public bool autoRemoveOnCancel = true;
+            public bool callFunctionImmediately;
+
+            [HideInInspector]
+            [NonSerialized]
+            public System.Reflection.MethodInfo cachedMethod;
+
+            [HideInInspector]
+            [NonSerialized]
+            public System.Reflection.MethodInfo cachedCancelMethod;
+
+            [HideInInspector]
+            [NonSerialized]
+            public Action<InputAction.CallbackContext> actionDelegate;
+
+            [HideInInspector]
+            [NonSerialized]
+            public Action<InputAction.CallbackContext> cancelDelegate;
+
+            [HideInInspector]
+            public bool ActionPerformed { get; set; }
+        }
 
         [HideInInspector]
-        [NonSerialized]
-        public System.Reflection.MethodInfo cachedMethod;
+        public List<InputActionBinding> inputActionBindings = new List<InputActionBinding>();
 
-        [HideInInspector]
-        [NonSerialized]
-        public System.Reflection.MethodInfo cachedCancelMethod;
-
-        [HideInInspector]
-        [NonSerialized]
-        public Action<InputAction.CallbackContext> actionDelegate;
-
-        [HideInInspector]
-        [NonSerialized]
-        public Action<InputAction.CallbackContext> cancelDelegate;
-
-        [HideInInspector]
-        public bool ActionPerformed { get; set; }
-    }
-
-    [HideInInspector]
-    public List<InputActionBinding> inputActionBindings = new List<InputActionBinding>();
-
-    private class Wrapper
-    {
-        public List<InputActionBinding> Bindings;
-    }
-
-    public void ExportBindingsToJson(string filePath)
-    {
-        try
+        private class Wrapper
         {
-            string json = JsonUtility.ToJson(new Wrapper { Bindings = this.inputActionBindings }, true);
-            File.WriteAllText(filePath, json);
-            Debug.Log("Export successful: " + filePath);
+            public List<InputActionBinding> Bindings;
         }
-        catch (Exception ex)
-        {
-            Debug.LogError("Failed to export to JSON: " + ex.Message);
-        }
-    }
 
-    public void ImportBindingsFromJson(string filePath)
-    {
-        try
+        public void ExportBindingsToJson(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            Wrapper wrapped = JsonUtility.FromJson<Wrapper>(json);
-            this.inputActionBindings = wrapped.Bindings;
-            Debug.Log("Import successful: " + filePath);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("Failed to import from JSON: " + ex.Message);
-        }
-    }
-
-    private void OnEnable()
-    {
-        if (InputActionManager.Instance != null)
-        {
-            InputActionManager.Instance.RegisterInteractableItem(this);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (InputActionManager.Instance != null)
-        {
-            InputActionManager.Instance.UnregisterInteractableItem(this);
-        }
-    }
-
-    public void Interacted()
-    {
-        foreach (var binding in inputActionBindings)
-        {
-            if (!binding.callFunctionImmediately)
+            try
             {
-                InputActionManager.Instance.BindAction(binding, this);
+                string json = JsonUtility.ToJson(new Wrapper { Bindings = this.inputActionBindings }, true);
+                File.WriteAllText(filePath, json);
+                Debug.Log("Export successful: " + filePath);
             }
-            else
+            catch (Exception ex)
             {
-                InputActionManager.Instance.CallAction(binding, this);
+                Debug.LogError("Failed to export to JSON: " + ex.Message);
             }
         }
 
-        if (activatable != null)
+        public void ImportBindingsFromJson(string filePath)
         {
-            activatable.SetActive(true);
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                Wrapper wrapped = JsonUtility.FromJson<Wrapper>(json);
+                this.inputActionBindings = wrapped.Bindings;
+                Debug.Log("Import successful: " + filePath);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Failed to import from JSON: " + ex.Message);
+            }
         }
 
-        if (deactivateOnInteract)
+        private void OnEnable()
         {
-            gameObject.SetActive(false);
+            if (InputActionManager.Instance != null)
+            {
+                InputActionManager.Instance.RegisterInteractableItem(this);
+            }
         }
 
-        if (destroyOnInteract)
+        private void OnDestroy()
         {
-            Destroy(gameObject);
+            if (InputActionManager.Instance != null)
+            {
+                InputActionManager.Instance.UnregisterInteractableItem(this);
+            }
+        }
+
+        public void Interacted()
+        {
+            foreach (var binding in inputActionBindings)
+            {
+                if (!binding.callFunctionImmediately)
+                {
+                    InputActionManager.Instance.BindAction(binding, this);
+                }
+                else
+                {
+                    InputActionManager.Instance.CallAction(binding, this);
+                }
+            }
+
+            if (activatable != null)
+            {
+                activatable.SetActive(true);
+            }
+
+            if (deactivateOnInteract)
+            {
+                gameObject.SetActive(false);
+            }
+
+            if (destroyOnInteract)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
