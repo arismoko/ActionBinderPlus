@@ -1,0 +1,24 @@
+{
+    "name": "com.arismoko.actionbinderplus",
+    "version": "1.0.0",
+    "displayName": "Action Binder Plus",
+    "description": "A package that provides enhanced action binding functionalities.",
+    "unity": "2020.3",
+    "author": {
+        "name": "arismoko",
+        "email": "figueredoaria@gmail.com",
+        "url": "https://github.com/arismoko"
+    },
+    "keywords": [
+        "action",
+        "binding",
+        "unity"
+    ],
+    "samples": [
+        {
+            "displayName": "Example Sample",
+            "description": "A sample demonstrating how to use Action Binder Plus.",
+            "path": "Samples/ExampleSample"
+        }
+    ]
+}
