@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Action Binder Plus** is a versatile tool designed to enhance the flexibility and functionality of your Unity projects. It simplifies the management of input actions for interactable items, making it ideal for handling complex inventory systems and various interactive elements in your game.
+**Action Binder Plus** is a versatile tool designed to simplify the management of input actions for interactable items, making it ideal for handling complex inventory systems and various interactive elements in your game.
 
 ## Features
 
