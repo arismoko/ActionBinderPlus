@@ -25,6 +25,11 @@
    - Assign a target component.
    - Set additional options such as `deactivateOnInteract` and `destroyOnInteract`.
 
+### Setting up the InputActionManager
+1. Attach the InputActionManager to an empty gameobject or your "player"
+2. The InputActionManager requires a PlayerInput component.
+3. Make sure the PlayerInput component's behaviour is set to invoke unity events.
+
 ### Binding Actions
 
 1. Select your `InteractableItem` in the Unity Editor.
