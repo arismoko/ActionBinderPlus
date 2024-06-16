@@ -42,7 +42,7 @@
 
 ### Examples
 
-A simple example is provided in the `Samples` folder. More examples will be added in the future to demonstrate various use cases and features of the package.
+A simple example is provided in the `Samples` folder. You must have TMP installed. The sample was made using the URP pipeline. More examples will be added in the future to demonstrate various use cases and features of the package.
 
 ## Contributing
 
