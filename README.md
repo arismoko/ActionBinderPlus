@@ -1,5 +1,3 @@
----
-
 # Action Binder Plus
 
 ## Overview
@@ -56,5 +54,3 @@ A simple example is provided in the `Samples` folder. More examples will be adde
 ## License
 
 This project is licensed under the MIT License.
-
----
